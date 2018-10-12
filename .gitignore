@@ -1,1 +1,16 @@
 /autom4te.cache/
+.deps/
+/config.log
+/config.status
+/Makefile
+/doc/Makefile
+/po/Makefile
+/po/Makefile.in
+/po/POTFILES
+/src/Makefile
+/src/config.h
+/src/stamp-h1
+*.o
+.dirstamp
+/src/flarq
+/src/fldigi
