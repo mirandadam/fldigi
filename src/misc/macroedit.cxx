@@ -105,6 +105,7 @@ void loadBrowser(Fl_Widget *widget) {
 
 	w->add(LINE_SEP);
 	w->add(_("<CLRRX>\tclear RX pane"));
+	w->add(_("<SAVRX:\tsave contents of RX pane to file"));
 	w->add(_("<CLRTX>\tclear TX pane"));
 
 	w->add(LINE_SEP);

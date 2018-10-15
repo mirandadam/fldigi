@@ -1440,6 +1440,84 @@ static void pCLRTX(std::string &s, size_t &i, size_t endbracket)
 		TransmitText->clear();
 }
 
+static void pSAVRX(std::string &s, size_t &i, size_t endbracket)
+{
+	std::string fname = s.substr(i + 7, endbracket - i - 7);
+	LOG_DEBUG("SAVRX called with fname = %s.", fname.c_str());
+	if (fname.length() > 0 && !within_exec) {
+		Fl_Text_Buffer_mod* rbuf=0;
+		if (active_modem->get_mode() == MODE_IFKP)
+			rbuf = ifkp_rx_text->buffer();
+		else if (active_modem->get_mode() == MODE_FSQ)
+			rbuf = fsq_rx_text->buffer();
+		else
+			rbuf = ReceiveText->buffer();
+
+		int r = rbuf->savefile(fname.c_str());
+		if (0==r) {
+			LOG_DEBUG("RX pane successfully saved to %s.", fname.c_str());
+		}
+		if (0!=r) {
+			string resp;
+			if(1==r){
+				resp= "Error: open for write failed (no data saved).";
+			} else if (2==r) {
+				resp= "Error while writing data (data was partially saved).";
+			} else {
+				resp= "Error: unexpected return code when writing file.";
+			}
+			resp.append(fname).append("\n");
+			if (active_modem->get_mode() == MODE_IFKP)
+				ifkp_rx_text->add(resp.c_str(), FTextBase::ALTR);
+			else if (active_modem->get_mode() == MODE_FSQ)
+				fsq_rx_text->add(resp.c_str(), FTextBase::ALTR);
+			else
+				ReceiveText->add(resp.c_str(), FTextBase::ALTR);
+			LOG_WARN("%s", resp.c_str());
+		}
+	}
+	s.replace(i, endbracket - i + 1, "");
+}
+
+static void pLOGRX(std::string &s, size_t &i, size_t endbracket)
+{
+	std::string fname = s.substr(i + 7, endbracket - i - 7);
+	LOG_DEBUG("SAVRX called with fname = %s.", fname.c_str());
+	if (fname.length() > 0 && !within_exec) {
+		Fl_Text_Buffer_mod* rbuf=0;
+		if (active_modem->get_mode() == MODE_IFKP)
+			rbuf = ifkp_rx_text->buffer();
+		else if (active_modem->get_mode() == MODE_FSQ)
+			rbuf = fsq_rx_text->buffer();
+		else
+			rbuf = ReceiveText->buffer();
+
+		int r = rbuf->savefile(fname.c_str());
+		if (0==r) {
+			LOG_DEBUG("RX pane successfully saved to %s.", fname.c_str());
+		}
+		if (0!=r) {
+			string resp;
+			if(1==r){
+				resp= "Error: open for write failed (no data saved).";
+			} else if (2==r) {
+				resp= "Error while writing data (data was partially saved).";
+			} else {
+				resp= "Error: unexpected return code when writing file.";
+			}
+			resp.append(fname).append("\n");
+			if (active_modem->get_mode() == MODE_IFKP)
+				ifkp_rx_text->add(resp.c_str(), FTextBase::ALTR);
+			else if (active_modem->get_mode() == MODE_FSQ)
+				fsq_rx_text->add(resp.c_str(), FTextBase::ALTR);
+			else
+				ReceiveText->add(resp.c_str(), FTextBase::ALTR);
+			LOG_WARN("%s", resp.c_str());
+		}
+	}
+	s.replace(i, endbracket - i + 1, "");
+}
+
 static void pFOCUS(std::string &s, size_t &i, size_t endbracket)
 {
 	if (!within_exec) {
@@ -1825,7 +1903,7 @@ static void pALERT(std::string &s, size_t &i, size_t endbracket)
 		return;
 	}
 	std::string cmd = s.substr(i+7, endbracket - i - 7);
-	if (audio_alert) 
+	if (audio_alert)
 		try {
 			audio_alert->alert(cmd);
 		} catch (...) {
@@ -4044,6 +4122,7 @@ static const MTAGS mtags[] = {
 {"<PAUSE>",		pPAUSE},
 {"<GET>",		pGET},
 {"<CLRRX>",		pCLRRX},
+{"<SAVRX:",		pSAVRX},
 {"<CLRTX>",		pCLRTX},
 {"<FOCUS>",		pFOCUS},
 {"<QSY+:",		pQSYPLUS},
