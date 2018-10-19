@@ -1479,7 +1479,7 @@ static void pSAVRX(std::string &s, size_t &i, size_t endbracket)
 	s.replace(i, endbracket - i + 1, "");
 }
 
-static void pLOGTORX(std::string &s, size_t &i, size_t endbracket)
+static void pWRITERX(std::string &s, size_t &i, size_t endbracket)
 {
 	//ISO date format is "%Y-%m-%d %H:%M%z"
 	time_t tmptr;
@@ -1487,16 +1487,33 @@ static void pLOGTORX(std::string &s, size_t &i, size_t endbracket)
 	time(&tmptr);
 	localtime_r(&tmptr, &sTime);
 
-	std::string logstring = s.substr(i + 7, endbracket - i - 7);
+	std::string logstring = s.substr(i + 9, endbracket - i - 9);
 
 	if (logstring.length() > 0)
 	{
+		//Inserting line breaks:
+		size_t cursor = logstring.find("\\n");
+    	while(cursor != std::string::npos) {
+        	logstring.replace(cursor, 2, "\n");
+			cursor = logstring.find("\\n",cursor+1);
+    	}
+		//Inserting carriage returns:
+		cursor = logstring.find("\\r");
+    	while(cursor != std::string::npos) {
+        	logstring.replace(cursor, 2, "\r");
+			cursor = logstring.find("\\r",cursor+1);
+    	}
+		//Insert time formatting string in the placeholders:
 		size_t len = 0;
 		char formatted_logstring[1024] = {0};
 		len = mystrftime(formatted_logstring,
 						 sizeof(formatted_logstring) - 1,
 						 logstring.c_str(),
 						 &sTime);
+		if (len == sizeof(formatted_logstring) - 1)
+		{
+			LOG_WARN("WRITERX call with string too long for buffer size: %s", logstring.c_str());
+		}
 		if (active_modem->get_mode() == MODE_IFKP)
 			ifkp_rx_text->add(formatted_logstring, FTextBase::ALTR);
 		else if (active_modem->get_mode() == MODE_FSQ)
@@ -4112,7 +4129,7 @@ static const MTAGS mtags[] = {
 {"<GET>",		pGET},
 {"<CLRRX>",		pCLRRX},
 {"<SAVRX:",		pSAVRX},
-{"<LOGTORX:",   pLOGTORX},
+{"<WRITERX:",   pWRITERX},
 {"<CLRTX>",		pCLRTX},
 {"<FOCUS>",		pFOCUS},
 {"<QSY+:",		pQSYPLUS},

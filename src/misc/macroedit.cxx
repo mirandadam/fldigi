@@ -107,7 +107,7 @@ void loadBrowser(Fl_Widget *widget) {
 	w->add(_("<CLRRX>\tclear RX pane"));
 	w->add(_("<SAVRX:\tsave contents of RX pane to file"));
 	w->add(_("<CLRTX>\tclear TX pane"));
-	w->add(_("<LOGTORX:%Y-%m-%d %H:%M%z message text>\t write text to the RX pane"));
+	w->add(_("<WRITERX:\n%Y-%m-%d %H:%M%z message text\n>\t write text to the RX pane"));
 
 	w->add(LINE_SEP);
 	w->add(_("<GET>\ttext to NAME/QTH"));
