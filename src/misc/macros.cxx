@@ -1524,6 +1524,16 @@ static void pWRITERX(std::string &s, size_t &i, size_t endbracket)
 	s.replace(i, endbracket - i + 1, "");
 }
 
+static void pWAV_PLAYBACK(std::string &s, size_t &i, size_t endbracket)
+{
+	std::string fname = s.substr(i + 9, endbracket - i - 9);
+
+	if (fname.length() > 0)
+	{
+	}
+	s.replace(i, endbracket - i + 1, "");
+}
+
 static void pFOCUS(std::string &s, size_t &i, size_t endbracket)
 {
 	if (!within_exec) {
@@ -4050,6 +4060,7 @@ static const MTAGS mtags[] = {
 {"<WAV_N:",		pWAV_N},
 {"<WAV_STRING:",pWAV_STRING},
 {"<WAV_TEST",	pWAV_TEST},
+{"<WAV_PLAYBACK:", pWAV_PLAYBACK},
 
 {"<COMMENT:",	pCOMMENT},
 {"<CALL>",		pCALL},

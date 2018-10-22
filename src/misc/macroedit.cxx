@@ -238,6 +238,7 @@ void loadBrowser(Fl_Widget *widget) {
 	w->add(_("<WAV_N:n>\tWAV file; 'n' random 5 char groups"));
 	w->add(_("<WAV_FILE:>\tWAV file; spec' file"));
 	w->add(_("<WAV_STRING:s>\tWAV file; string 's'"));
+	w->add(_("<WAV_PLAYBACK:filename.wav>\tPlayback WAV file."));
 
 	w->add(LINE_SEP);
 	w->add(_("<CSV:on|off|t>\tAnalysis CSV on,off,toggle"));
