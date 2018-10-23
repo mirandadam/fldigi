@@ -623,16 +623,25 @@ extern void  disable_deadman();
 extern void FHdisp_char_height();
 
 //======================================================================
-//Necessary for WAV playback macro
+//Necessary for WAV macros
+//
+// fsel == 0 is format = SF_FORMAT_WAV | SF_FORMAT_PCM_16
+// fsel == 1 is format = SF_FORMAT_AU | SF_FORMAT_FLOAT | SF_ENDIAN_CPU
+// fsel == 2 is format = SF_FORMAT_FLAC | SF_FORMAT_PCM_16
 //======================================================================
 extern std::string playback_fname;
-/*
-fsel == 0 is format = SF_FORMAT_WAV | SF_FORMAT_PCM_16
-fsel == 1 is format = SF_FORMAT_AU | SF_FORMAT_FLOAT | SF_ENDIAN_CPU
-fsel == 2 is format = SF_FORMAT_FLAC | SF_FORMAT_PCM_16
-*/
 extern int playback_fsel;
 extern bool playback_loop;
 extern void do_Playback(const std::string & fname, int format, bool loop);
+extern void do_PlaybackStop();
 
+extern std::string txgenerate_fname;
+extern int txgenerate_fsel;
+extern void do_TXGenerate(const std::string &fname, int fsel);
+extern void do_TXGenerateStop();
+
+extern std::string rxcapture_fname;
+extern int rxcapture_fsel;
+extern void do_RXCapture(const std::string &fname, int fsel);
+extern void do_RXCaptureStop();
 #endif

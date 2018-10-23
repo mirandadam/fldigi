@@ -1535,6 +1535,46 @@ static void pWAV_PLAYBACK(std::string &s, size_t &i, size_t endbracket)
 	s.replace(i, endbracket - i + 1, "");
 }
 
+static void pWAV_STOP_PLAYBACK(std::string &s, size_t &i, size_t endbracket)
+{
+	do_PlaybackStop();
+	s.replace(i, endbracket - i + 1, "");
+}
+
+static void pWAV_TXGENERATE(std::string &s, size_t &i, size_t endbracket)
+{
+	std::string fname = s.substr(i + 16, endbracket - i - 16);
+
+	if (fname.length() > 0)
+	{
+		do_TXGenerate(fname,0);
+	}
+	s.replace(i, endbracket - i + 1, "");
+}
+
+static void pWAV_STOP_TXGENERATE(std::string &s, size_t &i, size_t endbracket)
+{
+	do_TXGenerateStop();
+	s.replace(i, endbracket - i + 1, "");
+}
+
+static void pWAV_RXCAPTURE(std::string &s, size_t &i, size_t endbracket)
+{
+	std::string fname = s.substr(i + 15, endbracket - i - 15);
+
+	if (fname.length() > 0)
+	{
+		do_RXCapture(fname,0);
+	}
+	s.replace(i, endbracket - i + 1, "");
+}
+
+static void pWAV_STOP_RXCAPTURE(std::string &s, size_t &i, size_t endbracket)
+{
+	do_RXCaptureStop();
+	s.replace(i, endbracket - i + 1, "");
+}
+
 static void pFOCUS(std::string &s, size_t &i, size_t endbracket)
 {
 	if (!within_exec) {
@@ -4062,6 +4102,11 @@ static const MTAGS mtags[] = {
 {"<WAV_STRING:",pWAV_STRING},
 {"<WAV_TEST",	pWAV_TEST},
 {"<WAV_PLAYBACK:", pWAV_PLAYBACK},
+{"<WAV_TXGENERATE:", pWAV_TXGENERATE},
+{"<WAV_RXCAPTURE:", pWAV_RXCAPTURE},
+{"<WAV_STOP_PLAYBACK", pWAV_STOP_PLAYBACK},
+{"<WAV_STOP_TXGENERATE", pWAV_STOP_TXGENERATE},
+{"<WAV_STOP_RXCAPTURE", pWAV_STOP_RXCAPTURE},
 
 {"<COMMENT:",	pCOMMENT},
 {"<CALL>",		pCALL},

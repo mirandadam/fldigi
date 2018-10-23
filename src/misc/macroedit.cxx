@@ -239,7 +239,11 @@ void loadBrowser(Fl_Widget *widget) {
 	w->add(_("<WAV_FILE:>\tWAV file; spec' file"));
 	w->add(_("<WAV_STRING:s>\tWAV file; string 's'"));
 	w->add(_("<WAV_PLAYBACK:filename.wav>\tPlayback WAV file."));
-
+	w->add(_("<WAV_TXGENERATE:filename.wav>\tRecord output to WAV file."));
+	w->add(_("<WAV_RXCAPTURE:filename.wav>\tRecord input to WAV file."));
+	w->add(_("<WAV_STOP_PLAYBACK>\tStop playback."));
+	w->add(_("<WAV_STOP_TXGENERATE>\tStop recording output to WAV file."));
+	w->add(_("<WAV_STOP_RXCAPTURE>\tStop recording input to WAV file."));
 	w->add(LINE_SEP);
 	w->add(_("<CSV:on|off|t>\tAnalysis CSV on,off,toggle"));
 

@@ -2467,9 +2467,12 @@ static bool playval = false;
 void cb_mnuCapture(Fl_Widget *w, void *d)
 {
 	if (!RXscard) return;
-	Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label()); //eek
+	//Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label()); //eek
+	Fl_Menu_Item *m = getMenuItem(_("RX capture"));
 	if (playval || genval) {
 		m->clear();
+		rxcapture_fname.clear();
+		rxcapture_fsel=0;
 		return;
 	}
 	capval = m->value();
@@ -2481,9 +2484,12 @@ void cb_mnuCapture(Fl_Widget *w, void *d)
 
 void cb_mnuGenerate(Fl_Widget *w, void *d)
 {
-	Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label());
+	//Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label());
+	Fl_Menu_Item *m = getMenuItem(_("TX generate"));
 	if (capval || playval) {
 		m->clear();
+		txgenerate_fname.clear();
+		txgenerate_fsel=0;
 		return;
 	}
 	if (!TXscard) return;
@@ -2513,6 +2519,9 @@ void cb_mnuPlayback(Fl_Widget *w, void *d)
 	Playback_menu_item = m;
 	if (capval || genval) {
 		m->clear();
+		playback_fname.clear();
+		playback_fsel=0;
+		playback_loop=false;
 		bHighSpeed = false;
 		return;
 	}
@@ -2553,11 +2562,53 @@ void do_Playback(const std::string &fname, int fsel, bool loop)
 {
 	Fl_Menu_Item *m = getMenuItem(_("Playback"));
 	m->set();
-	//fl_digi_main->find();
 	playback_fname = fname;
 	playback_fsel = fsel;
 	playback_loop = loop;
 	cb_mnuPlayback((Fl_Widget *) 0, (void *) 0);
+}
+
+void do_PlaybackStop()
+{
+	Fl_Menu_Item *m = getMenuItem(_("Playback"));
+	m->clear();
+	cb_mnuPlayback((Fl_Widget *) 0, (void *) 0);
+}
+
+std::string txgenerate_fname = "";
+int txgenerate_fsel = 0; //SF_FORMAT_WAV | SF_FORMAT_PCM_16
+void do_TXGenerate(const std::string &fname, int fsel)
+{
+	Fl_Menu_Item *m = getMenuItem(_("TX generate"));
+	m->set();
+	txgenerate_fname = fname;
+	txgenerate_fsel = fsel;
+	cb_mnuGenerate((Fl_Widget *) 0, (void *) 0);
+}
+
+void do_TXGenerateStop()
+{
+	Fl_Menu_Item *m = getMenuItem(_("TX generate"));
+	m->clear();
+	cb_mnuGenerate((Fl_Widget *) 0, (void *) 0);
+}
+
+std::string rxcapture_fname = "";
+int rxcapture_fsel = 0; //SF_FORMAT_WAV | SF_FORMAT_PCM_16
+void do_RXCapture(const std::string &fname, int fsel)
+{
+	Fl_Menu_Item *m = getMenuItem(_("RX capture"));
+	m->set();
+	rxcapture_fname = fname;
+	rxcapture_fsel = fsel;
+	cb_mnuCapture((Fl_Widget *) 0, (void *) 0);
+}
+
+void do_RXCaptureStop()
+{
+	Fl_Menu_Item *m = getMenuItem(_("RX capture"));
+	m->clear();
+	cb_mnuCapture((Fl_Widget *) 0, (void *) 0);
 }
 #endif // USE_SNDFILE
 

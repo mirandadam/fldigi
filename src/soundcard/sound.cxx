@@ -178,7 +178,7 @@ void SoundBase::get_file_params(std::string def_fname, std::string &fname, int &
 	const char *fn = 0;
 	if (def_fname.find("playback") != std::string::npos)
 	{
-		if(playback_fname.empty())
+		if (playback_fname.empty())
 			fn = FSEL::select(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
 		else
 		{
@@ -186,8 +186,26 @@ void SoundBase::get_file_params(std::string def_fname, std::string &fname, int &
 			fsel = playback_fsel;
 		}
 	}
+	else if (def_fname.find("generate") != std::string::npos)
+	{
+		if (txgenerate_fname.empty())
+			fn = FSEL::saveas(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
+		else
+		{
+			fn = txgenerate_fname.c_str();
+			fsel = txgenerate_fsel;
+		}
+	}
 	else
-		fn = FSEL::saveas(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
+	{
+		if (rxcapture_fname.empty())
+			fn = FSEL::saveas(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
+		else
+		{
+			fn = rxcapture_fname.c_str();
+			fsel = rxcapture_fsel;
+		}
+	}
 
 	if (!fn || !*fn) {
 		fname = "";
@@ -243,6 +261,8 @@ int SoundBase::Capture(bool val)
 			ofCapture = 0;
 		}
 		capture = false;
+		rxcapture_fname.clear();
+		rxcapture_fsel = 0;
 		return 1;
 	}
 
@@ -280,6 +300,8 @@ int SoundBase::Generate(bool val)
 			ofGenerate = 0;
 		}
 		generate = false;
+		txgenerate_fname.clear();
+		txgenerate_fsel = 0;
 		return 1;
 	}
 
@@ -325,7 +347,9 @@ int SoundBase::Playback(bool val)
 			ifPlayback = 0;
 		}
 		playback = false;
-		reset_mnuPlayback();
+		playback_fname.clear();
+		playback_fsel = 0;
+		playback_loop = false;
 		return 1;
 	}
 	std::string fname;
