@@ -622,4 +622,17 @@ extern void  disable_deadman();
 //======================================================================
 extern void FHdisp_char_height();
 
+//======================================================================
+//Necessary for WAV playback macro
+//======================================================================
+extern std::string playback_fname;
+/*
+fsel == 0 is format = SF_FORMAT_WAV | SF_FORMAT_PCM_16
+fsel == 1 is format = SF_FORMAT_AU | SF_FORMAT_FLOAT | SF_ENDIAN_CPU
+fsel == 2 is format = SF_FORMAT_FLAC | SF_FORMAT_PCM_16
+*/
+extern int playback_fsel;
+extern bool playback_loop;
+extern void do_Playback(const std::string & fname, int format, bool loop);
+
 #endif

@@ -2499,13 +2499,17 @@ void reset_mnuPlayback()
 {
 	if (Playback_menu_item == 0) return;
 	Playback_menu_item->clear();
+	playback_fname.clear();
+	playback_fsel = 0; // SF_FORMAT_WAV | SF_FORMAT_PCM_16
+	playback_loop = false;
 	playval = false;
 }
 
 void cb_mnuPlayback(Fl_Widget *w, void *d)
 {
 	if (!RXscard) return;
-	Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label());
+	//Fl_Menu_Item *m = getMenuItem(((Fl_Menu_*)w)->mvalue()->label());
+	Fl_Menu_Item *m = getMenuItem(_("Playback"));
 	Playback_menu_item = m;
 	if (capval || genval) {
 		m->clear();
@@ -2540,6 +2544,20 @@ void cb_mnuPlayback(Fl_Widget *w, void *d)
 		btnAutoSpot->value(0);
 		btnAutoSpot->do_callback();
 	}
+}
+
+std::string playback_fname = "";
+int playback_fsel = 0; //SF_FORMAT_WAV | SF_FORMAT_PCM_16
+bool playback_loop = false;
+void do_Playback(const std::string &fname, int fsel, bool loop)
+{
+	Fl_Menu_Item *m = getMenuItem(_("Playback"));
+	m->set();
+	//fl_digi_main->find();
+	playback_fname = fname;
+	playback_fsel = fsel;
+	playback_loop = loop;
+	cb_mnuPlayback((Fl_Widget *) 0, (void *) 0);
 }
 #endif // USE_SNDFILE
 
@@ -9753,7 +9771,7 @@ void qsy(long long rfc, int fmid)
 	if (xcvr_useFSK) {
 		int fmid = progdefaults.xcvr_FSK_MARK + rtty::SHIFT[progdefaults.rtty_shift]/2;
 		wf->carrier(fmid);
-	} 
+	}
 }
 
 map<string, qrg_mode_t> qrg_marks;
@@ -9897,7 +9915,7 @@ void set_default_btn_color()
 	Fl_Light_Button *buttons[] = {
 		btn_FSQCALL, btn_SELCAL, btn_MONITOR, btnPSQL,
 		btnDupCheckOn, btn_WK_connect,
-		btn_nanoCW_connect, btn_nanoIO_connect, 
+		btn_nanoCW_connect, btn_nanoIO_connect,
 		btn_enable_auditlog, btn_enable_fsq_heard_log,
 		btn_enable_ifkp_audit_log, btn_enable_ifkp_audit_log,
 		btn_Nav_connect, btn_Nav_config,

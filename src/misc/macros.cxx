@@ -1526,10 +1526,11 @@ static void pWRITERX(std::string &s, size_t &i, size_t endbracket)
 
 static void pWAV_PLAYBACK(std::string &s, size_t &i, size_t endbracket)
 {
-	std::string fname = s.substr(i + 9, endbracket - i - 9);
+	std::string fname = s.substr(i + 14, endbracket - i - 14);
 
 	if (fname.length() > 0)
 	{
+		do_Playback(fname,0,false);
 	}
 	s.replace(i, endbracket - i + 1, "");
 }

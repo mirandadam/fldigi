@@ -177,7 +177,15 @@ void SoundBase::get_file_params(std::string def_fname, std::string &fname, int &
 	int fsel;
 	const char *fn = 0;
 	if (def_fname.find("playback") != std::string::npos)
-		fn = FSEL::select(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
+	{
+		if(playback_fname.empty())
+			fn = FSEL::select(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
+		else
+		{
+			fn = playback_fname.c_str();
+			fsel = playback_fsel;
+		}
+	}
 	else
 		fn = FSEL::saveas(_("Audio file"), filters.c_str(), def_fname.c_str(), &fsel);
 
@@ -246,7 +254,7 @@ int SoundBase::Capture(bool val)
 		return 0;
 
 	// frames (ignored), freq, channels, format, sections (ignored), seekable (ignored)
-	SF_INFO info = { 0, sndfile_samplerate[progdefaults.wavSampleRate], 
+	SF_INFO info = { 0, sndfile_samplerate[progdefaults.wavSampleRate],
 		progdefaults.record_both_channels ? 2 : 1,
 //		SNDFILE_CHANNELS,
 		format, 0, 0 };
@@ -281,7 +289,7 @@ int SoundBase::Generate(bool val)
 	if (fname.empty())
 		return 0;
 
-	SF_INFO info = { 0, sndfile_samplerate[progdefaults.wavSampleRate], 
+	SF_INFO info = { 0, sndfile_samplerate[progdefaults.wavSampleRate],
 		progdefaults.record_both_channels ? 2 : 1,
 //		SNDFILE_CHANNELS,
 		format, 0, 0 };
@@ -317,6 +325,7 @@ int SoundBase::Playback(bool val)
 			ifPlayback = 0;
 		}
 		playback = false;
+		reset_mnuPlayback();
 		return 1;
 	}
 	std::string fname;
@@ -357,7 +366,10 @@ play_info.seekable);
 LOG_VERBOSE
 ("src ratio %f", play_src_data->src_ratio);
 
-	progdefaults.loop_playback = fl_choice2(_("Playback continuous loop?"), _("No"), _("Yes"), NULL);
+	if(playback_fname.empty())
+		progdefaults.loop_playback = fl_choice2(_("Playback continuous loop?"), _("No"), _("Yes"), NULL);
+	else
+		progdefaults.loop_playback = playback_loop;
 
 	playback = true;
 	new_playback = true;
@@ -1210,8 +1222,8 @@ device type = %s\n\
 device name = %s\n\
 # input channels %d\n\
 # output channels %d",
-		mode == O_WRONLY ? "Write" : 
-		mode == O_RDONLY ? "Read" : 
+		mode == O_WRONLY ? "Write" :
+		mode == O_RDONLY ? "Read" :
 		mode == O_RDWR ? "Read/Write" : "unknown",
 		device_type == 0 ? "paInDevelopment" :
 		device_type == 1 ? "paDirectSound" :
@@ -1976,7 +1988,7 @@ SoundPulse::SoundPulse(const char *dev)
 {
 	sd[0].stream = 0;
 	sd[0].stream_params.channels = 2;
-	sd[0].dir = PA_STREAM_RECORD; 
+	sd[0].dir = PA_STREAM_RECORD;
 	sd[0].stream_params.format = PA_SAMPLE_FLOAT32LE;
 	sd[0].buffer_attrs.maxlength = (uint32_t)-1;
 	sd[0].buffer_attrs.minreq = (uint32_t)-1;
@@ -2198,7 +2210,7 @@ long SoundPulse::src_read_cb(void* arg, float** data)
 
 	int err;
 	int nread = 0;
-	if ((nread = pa_simple_read(p->sd[0].stream, p->snd_buffer, 
+	if ((nread = pa_simple_read(p->sd[0].stream, p->snd_buffer,
 			p->sd[0].stream_params.channels * sizeof(float) * p->sd[0].blocksize, &err)) == -1) {
 		LOG_ERROR("%s", pa_strerror(err));
 		*data = 0;
@@ -2241,7 +2253,7 @@ size_t SoundPulse::Read(float *buf, size_t count)
 	}
 	else {
 		int err;
-		if ((r = pa_simple_read(sd[0].stream, rbuf, 
+		if ((r = pa_simple_read(sd[0].stream, rbuf,
 				sd[0].stream_params.channels * sizeof(float) * count, &err)) == -1)
 			throw SndPulseException(err);
 	}
